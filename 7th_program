@@ -1,0 +1,16 @@
+!pip install transformers
+--------------------------
+from transformers import pipeline
+
+summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+
+long_text = """
+Artificial Intelligence, through its ability to analyze massive datasets and recognize intricate patterns, is revolutionizing fields such as healthcare, finance, and education by enabling faster, more accurate, and more personalized decision-making.
+As machine learning algorithms continue to evolve, they are increasingly capable of performing tasks that traditionally required human intelligence, such as understanding natural language, recognizing images, and even generating creative content.
+The integration of AI into everyday technologies—from virtual assistants to recommendation systems—is reshaping how people interact with digital devices and consume information, often without them even realizing it.
+Despite its vast potential, the rapid advancement of AI raises important ethical and societal concerns, including issues related to privacy, algorithmic bias, job displacement, and the need for robust regulatory frameworks.
+"""
+
+summary = summarizer(long_text, max_length=130, min_length=30, do_sample=False)
+print(summary[0]['summary_text'])
+-------------------------------------

@@ -1,0 +1,71 @@
+!pip install --upgrade gensim scipy
+
+----------------------------------------
+from gensim.models import KeyedVectors
+
+#convert Glove format to word2vec format
+word2vec_output_file = '/kaggle/input/google-word2vec/GoogleNews-vectors-negative300.bin'
+
+#/kaggle/input/glovea
+# Load the converted model
+word_vectors = KeyedVectors.load_word2vec_format(word2vec_output_file,binary=True)
+---------------------------------------------
+
+print(word_vectors['king'])
+----------------------------------
+print(word_vectors.most_similar('palace', topn=5))
+-------------------------------------------
+result = word_vectors.most_similar(positive=['India','capital'],topn=5)
+print(result)
+---------------------------------------------------
+result = word_vectors.most_similar(positive=['France','capital'],topn=5)
+print(result)
+----------------------------------------------------------------------------
+result = word_vectors.most_similar(positive=['Karnataka','capital'],topn=5)
+print(result)
+-----------------------------------------------
+result = word_vectors.most_similar(positive=['Prince','man'],topn=5)
+print(result)
+
+---------------------------------------------------------
+result = word_vectors.most_similar(positive=['Prince','Woman'],topn=5)
+print(result)
+------------------------------------------------------
+result = word_vectors.most_similar(positive=['King','Queen'],topn=5)
+print(result)
+----------------------------------------------------------
+result = word_vectors.most_similar(positive=['School','Teachers'],topn=5)
+print(result)
+------------------------------------------------------------
+result = word_vectors.most_similar(positive=['King'],negative=['man'],topn=5)
+print(result)
+--------------------------------------------------------------------
+result = word_vectors.most_similar(positive=['Policeman'],negative=['man'],topn=5)
+print(result)
+-------------------------------------------------------------
+result = word_vectors.most_similar(positive=['bus'],negative=['car'],topn=5)
+print(result)
+----------------------------------------------------------
+result = word_vectors.most_similar(positive=['Bus'],negative=['man'],topn=5)
+print(result)
+-------------------------------------------------------
+result = word_vectors.most_similar(positive=['walking','run'], negative=['walk'], topn=5)
+print(result)
+---------------------------------------------------------------
+result = word_vectors.most_similar(positive=['Berlin','Germany'], negative=['India'], topn=5)
+print(result)
+----------------------------------------------------
+import numpy as np
+
+word = 'strong'
+scaled_vector = np.multiply(word_vectors[word], 2) #doubling the strength
+
+result = word_vectors.similar_by_vector(scaled_vector, topn=5)
+print(result)
+---------------------------------
+similarity = word_vectors.similarity('cat','car')
+print(f"Similarity between 'cat' and 'car': {similarity:.4f}")
+-----------------------------------
+similarity = word_vectors.similarity('cat','dog')
+print(f"Similarity between 'cat' and 'dog': {similarity:.4f}")
+---------------------------------------------

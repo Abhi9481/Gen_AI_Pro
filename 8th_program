@@ -1,0 +1,50 @@
+!pip install langchain-community langchain-cohere
+!pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
+!pip install cohere
+---------------------------------------------------
+import os
+from kaggle_secrets import UserSecretsClient
+
+#Initialize the UserSecretsClient
+user_secrets = UserSecretsClient()
+
+#Retrieve the secret value
+cohere_api_key = user_secrets.get_secret("COHERE_API_KEY")
+
+#set the API key as an environment variable
+os.environ["COHERE_API_KEY"] = cohere_api_key
+"""
+#Access Google Drive Files in kaggle Notebook:"""
+--------------------------------------------------------
+!pip install gdown
+#!gdown --id FILE_ID
+!gdown --id 1wgU6dM4sF5qYhwwojg6yqiqdKSKihtMK
+---------------------------------
+text_content = ' '
+with open('/kaggle/working/Abhi.txt', 'r', encoding='utf-8') as file:
+    text_content = file.read()
+    print(text_content)
+--------------------------------------------------
+from langchain_cohere import ChatCohere
+from langchain_cohere.llms import Cohere
+
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.documents import Document
+from langchain.chains.combine_documents import (
+    create_stuff_documents_chain,
+)
+
+#Define the Cohere LLM
+llm = ChatCohere(
+    cohere_api_key=cohere_api_key, model="command-a-03-2025"
+)
+print(text_content)
+prompt = ChatPromptTemplate.from_messages(
+    [("human", "who is class teacher:\n\n{context}")]
+)
+
+chain = create_stuff_documents_chain(llm, prompt)
+docs = [
+    Document(page_content= text_content)
+]
+chain.invoke({"context": docs})

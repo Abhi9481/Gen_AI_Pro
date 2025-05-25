@@ -1,0 +1,20 @@
+!pip install transformers
+---------------------------------------
+#import required libraries
+from transformers import pipeline
+#load the pre-trained sentiment analysis model
+sentiment_pipeline = pipeline("sentiment-analysis", model="distilbert/distilbert-base-uncased-finetuned-sst-2-english")
+#example customer reviews for sentiment analysis
+reviews = [
+    "The product quality is amazing! Highly recomended it.",
+    "Woest experience ever! I will never buy from this store again.",
+    "The service was okay, but it could have been better.",
+    "Absolutely love it! Best purchase I've made this year.",
+    "The shipping took too long, and customer support was unhelpful."
+]
+#Analyze sentiment for each review
+results = sentiment_pipeline(reviews)
+#Display results
+for review, result in zip(reviews, results):
+    print(f"Review:{review}\nSentiment: {result['label']}(Confidence: {result['score']:.2f}\n")
+-------------------------------------------------------------------
