@@ -1,0 +1,56 @@
+!pip install gensim scipy nltk
+------------------------------------------
+from gensim.models import KeyedVectors
+import numpy as np
+import os
+import nltk
+from nltk.corpus import wordnet
+
+from nltk.tokenize import sent_tokenize
+nltk.download('wordnet')
+nltk.download('punkt')
+----------------------------------------------
+def load_word_vectors():
+    model_path = "/kaggle/input/google-word2vec/GoogleNews-vectors-negative300.bin"
+    model = KeyedVectors.load_word2vec_format(model_path, binary=True)
+    return model
+model = load_word_vectors()
+-------------------------------------------
+def get_similar_words(word, model, top_n=5):
+    try:
+        similar_words = model.most_similar(word, topn=top_n)
+        return [w[0] for w in similar_words]
+    except KeyError:
+        return []
+def get_synonyms(word):
+    try:
+        synonyms = set()
+        for syn in wordnet.synsets(word):
+            for lemma in syn.lemmas():
+                synonyms.add(lemma.name())
+        return list(synonyms)[:5]
+    except LookupError:
+        return []
+
+def generate_story(seed_word, model):
+    similar_words = get_similar_words(seed_word, model, top_n=3)
+    synonyms = get_synonyms(seed_word)
+    word_choices = list(set(similar_words + synonyms))
+    #Ensure we have at least 5 words
+    while len(word_choices) < 5:
+        word_choices.append(seed_word) #fallback to the seed word
+
+    story_template = (
+        f"Once upon a time, in a mystical land, there was an ancient {seed_word}."
+        f"Legends spoke of its power hidden within the {word_choices[0]}."
+        f"One evening, under a {word_choices[1]} sky, a young explorer named Alex set out on a journey."
+        f"Guided by an old {word_choices[2]}, they discovered a secret passage leading to a hidden realm."
+        f"Inside, they found an inscription written in {word_choices[3]} and uncovered the secret of {word_choices[4]}."
+        f"This adventure would change their fate forever, unlocking mysteries long forgotten."
+    )
+    return " ".join(sent_tokenize(story_template))
+---------------------------------------------------------------------------------
+seed_word = "adventure"
+generated_story = generate_story(seed_word, model)
+print("Generated Story:")
+print(generated_story)
